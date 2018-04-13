@@ -1,13 +1,7 @@
 package com.vdurmont.emoji;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
 /**
  * Holds the loaded emojis and provides search functions.
@@ -16,41 +10,32 @@ import java.util.Set;
  */
 public class EmojiManager {
   private static final String PATH = "/emojis.json";
+  private static final String EMOJIS_SER_FILE = "emojis.ser";
   private static final Map<String, Emoji> EMOJIS_BY_ALIAS =
     new HashMap<String, Emoji>();
   private static final Map<String, Set<Emoji>> EMOJIS_BY_TAG =
     new HashMap<String, Set<Emoji>>();
-  private static final List<Emoji> ALL_EMOJIS;
-  private static final EmojiTrie EMOJI_TRIE;
+  private static List<Emoji> allEmojis = null;
+  private static EmojiTrie emojiTrie = null;
 
-  static {
-    try {
-      InputStream stream = EmojiLoader.class.getResourceAsStream(PATH);
-      List<Emoji> emojis = EmojiLoader.loadEmojis(stream);
-      ALL_EMOJIS = emojis;
-      for (Emoji emoji : emojis) {
-        for (String tag : emoji.getTags()) {
-          if (EMOJIS_BY_TAG.get(tag) == null) {
-            EMOJIS_BY_TAG.put(tag, new HashSet<Emoji>());
+  public EmojiManager() {
+      if(allEmojis == null){
+          List<Emoji> emojis = loadDataFromBinaryToEmojiList();
+          allEmojis = emojis;
+          for (Emoji emoji : emojis) {
+              for (String tag : emoji.getTags()) {
+                  if (EMOJIS_BY_TAG.get(tag) == null) {
+                      EMOJIS_BY_TAG.put(tag, new HashSet<Emoji>());
+                  }
+                  EMOJIS_BY_TAG.get(tag).add(emoji);
+              }
+              for (String alias : emoji.getAliases()) {
+                  EMOJIS_BY_ALIAS.put(alias, emoji);
+              }
           }
-          EMOJIS_BY_TAG.get(tag).add(emoji);
-        }
-        for (String alias : emoji.getAliases()) {
-          EMOJIS_BY_ALIAS.put(alias, emoji);
-        }
+          emojiTrie = new EmojiTrie(emojis);
       }
-
-      EMOJI_TRIE = new EmojiTrie(emojis);
-      stream.close();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
   }
-
-  /**
-   * No need for a constructor, all the methods are static.
-   */
-  private EmojiManager() {}
 
   /**
    * Returns all the {@link com.vdurmont.emoji.Emoji}s for a given tag.
@@ -106,7 +91,7 @@ public class EmojiManager {
     if (unicode == null) {
       return null;
     }
-    return EMOJI_TRIE.getEmoji(unicode);
+    return emojiTrie.getEmoji(unicode);
   }
 
   /**
@@ -115,7 +100,7 @@ public class EmojiManager {
    * @return all the {@link com.vdurmont.emoji.Emoji}s
    */
   public static Collection<Emoji> getAll() {
-    return ALL_EMOJIS;
+    return allEmojis;
   }
 
   /**
@@ -163,7 +148,7 @@ public class EmojiManager {
    * &lt;/li&gt;
    */
   public static EmojiTrie.Matches isEmoji(char[] sequence) {
-    return EMOJI_TRIE.isEmoji(sequence);
+    return emojiTrie.isEmoji(sequence);
   }
 
   /**
@@ -174,4 +159,46 @@ public class EmojiManager {
   public static Collection<String> getAllTags() {
     return EMOJIS_BY_TAG.keySet();
   }
+
+  private static List<Emoji> loadDataFromJsonToEmojiList(){
+      List<Emoji> emojis = new ArrayList<Emoji>();
+      try {
+          InputStream stream = EmojiLoader.class.getResourceAsStream(PATH);
+          emojis = EmojiLoader.loadEmojis(stream);
+          stream.close();
+      } catch (IOException e) {
+          e.printStackTrace();
+      }
+      return emojis;
+  }
+
+  private static List<Emoji> loadDataFromBinaryToEmojiList(){
+      List<Emoji> emojis = new ArrayList<Emoji>();
+      try {
+          InputStream fileIn = EmojiLoader.class.getResourceAsStream("/" + EMOJIS_SER_FILE);
+          ObjectInputStream in = new ObjectInputStream(fileIn);
+          emojis = (List<Emoji>) in.readObject();
+          in.close();
+          fileIn.close();
+      } catch (Exception e) {
+          e.printStackTrace();
+      }
+      return emojis;
+  }
+
+  public static void transferEmojiJsonToBinaryFile(){
+      List<Emoji> emojis = loadDataFromJsonToEmojiList();
+      try {
+          FileOutputStream fileout = new FileOutputStream(EMOJIS_SER_FILE);
+          ObjectOutputStream out = new ObjectOutputStream(fileout);
+          out.writeObject(emojis);
+          out.close();
+          fileout.close();
+      } catch (FileNotFoundException e) {
+          e.printStackTrace();
+      } catch (IOException e){
+          e.printStackTrace();
+      }
+  }
+
 }

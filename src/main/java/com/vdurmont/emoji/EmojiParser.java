@@ -13,6 +13,8 @@ import java.util.regex.Pattern;
  * @author Vincent DURMONT [vdurmont@gmail.com]
  */
 public class EmojiParser {
+  private static EmojiManager emojiManager = new EmojiManager();
+
   private static final Pattern ALIAS_CANDIDATE_PATTERN =
     Pattern.compile("(?<=:)\\+?(\\w|\\||\\-)+(?=:)");
 
@@ -122,7 +124,7 @@ public class EmojiParser {
     // Replace the aliases by their unicode
     String result = input;
     for (AliasCandidate candidate : candidates) {
-      Emoji emoji = EmojiManager.getForAlias(candidate.alias);
+      Emoji emoji = emojiManager.getForAlias(candidate.alias);
       if (emoji != null) {
         if (
           emoji.supportsFitzpatrick() ||
@@ -141,7 +143,7 @@ public class EmojiParser {
     }
 
     // Replace the html
-    for (Emoji emoji : EmojiManager.getAll()) {
+    for (Emoji emoji : emojiManager.getAll()) {
       result = result.replace(emoji.getHtmlHexadecimal(), emoji.getUnicode());
       result = result.replace(emoji.getHtmlDecimal(), emoji.getUnicode());
     }
@@ -418,7 +420,7 @@ public class EmojiParser {
       int emojiEnd = getEmojiEndPos(chars, i);
 
       if (emojiEnd != -1) {
-        Emoji emoji = EmojiManager.getByUnicode(new String(chars, i, emojiEnd - i));
+        Emoji emoji = emojiManager.getByUnicode(new String(chars, i, emojiEnd - i));
         String fitzpatrickString = (emojiEnd + 2 <= chars.length) ?
                 new String(chars, emojiEnd, 2) :
                 null;
@@ -451,7 +453,7 @@ public class EmojiParser {
   protected static int getEmojiEndPos(char[] text, int startPos) {
     int best = -1;
     for (int j = startPos + 1; j <= text.length; j++) {
-      EmojiTrie.Matches status = EmojiManager.isEmoji(Arrays.copyOfRange(
+      EmojiTrie.Matches status = emojiManager.isEmoji(Arrays.copyOfRange(
         text,
         startPos,
         j

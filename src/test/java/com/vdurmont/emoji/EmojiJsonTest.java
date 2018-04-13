@@ -48,7 +48,8 @@ public class EmojiJsonTest {
     @Ignore("1665 emoji still has not been added")
     @Test
     public void checkEmojiExisting() throws Exception {
-        assertTrue("Asserting for emoji: " + emoji, EmojiManager.isEmoji(emoji));
+        EmojiManager emojiManager = new EmojiManager();
+        assertTrue("Asserting for emoji: " + emoji, emojiManager.isEmoji(emoji));
     }
 
     @Test

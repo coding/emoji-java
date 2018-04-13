@@ -1,14 +1,13 @@
 package com.vdurmont.emoji;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -18,12 +17,20 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4.class)
 public class EmojiManagerTest {
+
+  public static EmojiManager emojiManager;
+
+  @Before
+  public void init(){
+    emojiManager = new EmojiManager();
+  }
+
   @Test
   public void getForTag_with_unknown_tag_returns_null() throws IOException {
     // GIVEN
 
     // WHEN
-    Set<Emoji> emojis = EmojiManager.getForTag("jkahsgdfjksghfjkshf");
+    Set<Emoji> emojis = emojiManager.getForTag("jkahsgdfjksghfjkshf");
 
     // THEN
     assertNull(emojis);
@@ -34,7 +41,7 @@ public class EmojiManagerTest {
     // GIVEN
 
     // WHEN
-    Set<Emoji> emojis = EmojiManager.getForTag("happy");
+    Set<Emoji> emojis = emojiManager.getForTag("happy");
 
     // THEN
     assertEquals(4, emojis.size());
@@ -52,7 +59,7 @@ public class EmojiManagerTest {
     // GIVEN
 
     // WHEN
-    Emoji emoji = EmojiManager.getForAlias("jkahsgdfjksghfjkshf");
+    Emoji emoji = emojiManager.getForAlias("jkahsgdfjksghfjkshf");
 
     // THEN
     assertNull(emoji);
@@ -63,7 +70,7 @@ public class EmojiManagerTest {
     // GIVEN
 
     // WHEN
-    Emoji emoji = EmojiManager.getForAlias("smile");
+    Emoji emoji = emojiManager.getForAlias("smile");
 
     // THEN
     assertEquals(
@@ -78,7 +85,7 @@ public class EmojiManagerTest {
     // GIVEN
 
     // WHEN
-    Emoji emoji = EmojiManager.getForAlias(":smile:");
+    Emoji emoji = emojiManager.getForAlias(":smile:");
 
     // THEN
     assertEquals(
@@ -93,7 +100,7 @@ public class EmojiManagerTest {
     String emoji = "😀";
 
     // WHEN
-    boolean isEmoji = EmojiManager.isEmoji(emoji);
+    boolean isEmoji = emojiManager.isEmoji(emoji);
 
     // THEN
     assertTrue(isEmoji);
@@ -105,7 +112,7 @@ public class EmojiManagerTest {
     String emoji = "\uD83E\uDD30\uD83C\uDFFB";
 
     // WHEN
-    boolean isEmoji = EmojiManager.isEmoji(emoji);
+    boolean isEmoji = emojiManager.isEmoji(emoji);
 
     // THEN
     assertTrue(isEmoji);
@@ -117,7 +124,7 @@ public class EmojiManagerTest {
     String str = "test";
 
     // WHEN
-    boolean isEmoji = EmojiManager.isEmoji(str);
+    boolean isEmoji = emojiManager.isEmoji(str);
 
     // THEN
     assertFalse(isEmoji);
@@ -129,7 +136,7 @@ public class EmojiManagerTest {
     String str = "😀 test";
 
     // WHEN
-    boolean isEmoji = EmojiManager.isEmoji(str);
+    boolean isEmoji = emojiManager.isEmoji(str);
 
     // THEN
     assertFalse(isEmoji);
@@ -141,7 +148,7 @@ public class EmojiManagerTest {
     String str = "😀";
 
     // WHEN
-    boolean isEmoji = EmojiManager.isOnlyEmojis(str);
+    boolean isEmoji = emojiManager.isOnlyEmojis(str);
 
     // THEN
     assertTrue(isEmoji);
@@ -153,7 +160,7 @@ public class EmojiManagerTest {
     String str = "😀😀😀";
 
     // WHEN
-    boolean isEmoji = EmojiManager.isOnlyEmojis(str);
+    boolean isEmoji = emojiManager.isOnlyEmojis(str);
 
     // THEN
     assertTrue(isEmoji);
@@ -165,7 +172,7 @@ public class EmojiManagerTest {
     String str = "😀a";
 
     // WHEN
-    boolean isEmoji = EmojiManager.isOnlyEmojis(str);
+    boolean isEmoji = emojiManager.isOnlyEmojis(str);
 
     // THEN
     assertFalse(isEmoji);
@@ -176,7 +183,7 @@ public class EmojiManagerTest {
     // GIVEN
 
     // WHEN
-    Collection<String> tags = EmojiManager.getAllTags();
+    Collection<String> tags = emojiManager.getAllTags();
 
     // THEN
     // We know the number of distinct tags int the...!
@@ -188,7 +195,7 @@ public class EmojiManagerTest {
     // GIVEN
 
     // WHEN
-    Collection<Emoji> emojis = EmojiManager.getAll();
+    Collection<Emoji> emojis = emojiManager.getAll();
 
     // THEN
     Set<String> unicodes = new HashSet<String>();
@@ -207,7 +214,7 @@ public class EmojiManagerTest {
     // GIVEN
 
     // WHEN
-    Collection<Emoji> emojis = EmojiManager.getAll();
+    Collection<Emoji> emojis = emojiManager.getAll();
 
     // THEN
     Set<String> aliases = new HashSet<String>();

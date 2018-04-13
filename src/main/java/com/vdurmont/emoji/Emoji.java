@@ -1,5 +1,6 @@
 package com.vdurmont.emoji;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
  *
  * @author Vincent DURMONT [vdurmont@gmail.com]
  */
-public class Emoji {
+public class Emoji implements Serializable{
   private final String description;
   private final boolean supportsFitzpatrick;
   private final List<String> aliases;
