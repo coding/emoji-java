@@ -14,7 +14,7 @@ compile files('libs/emoji-java-4.0.0-coding.jar')
 
 ## What change the Coding makes?
 + Use binary format to load emoji resource instead of json.
-+ Use constructor in EmojiManager instead of static function. The intent is to eable lazy loading for emoji resource.
++ Use constructor in EmojiManager instead of static function. The intent is to enable lazy loading for emoji resource.
 
 ## How to maintain if emojis resource change?
 If `src/main/resource/emojis.json` changed, you can run `GenerateBinaryEmojisFileTools` to generate binary file. 
