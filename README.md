@@ -8,6 +8,9 @@
 
 **emoji-java** is a lightweight java library that helps you use Emojis in your java applications.
 
+## How to develop it?
+You can refer [DEVELOPMENT.md](DEVELOPMENT.md).
+
 ## How to get it?
 
 ##### Via Maven:
