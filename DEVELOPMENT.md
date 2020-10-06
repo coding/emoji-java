@@ -3,7 +3,7 @@ This repository is derived from [vdurmont/emoji-java](https://github.com/vdurmon
 Coding makes some change in this version to be used in product more suitable.
 
 ## How to build it?
-The project uses maven as build tool. You can use `mvn clean install` to build jar.
+The project uses maven as build tool. You can use `mvn package` to build jar.
 After that, you can copy the jar under `target/` into your project libs.
 
 ## How to use it?
