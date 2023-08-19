@@ -22,7 +22,7 @@ You can refer [DEVELOPMENT.md](DEVELOPMENT.md).
 </dependency>
 ```
 
-You can also download the project, build it with `mvn clean install` and add the generated jar to your buildpath.
+You can also download the project, build it with `mvn package` and add the generated jar to your buildpath.
 
 ##### Via Gradle:
 ```gradle
